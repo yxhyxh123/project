@@ -15,7 +15,7 @@ import java.io.Serializable;
  * @date 2020/3/18 11:21 上午
  */
 @Data
-@Table(name ="YZH.MEMBER" )
+@Table(name ="SYSTEM.MEMBER" )
 public class UserEntity implements Serializable {
     private static final long serialVersionUID = 7170901961429821794L;
 

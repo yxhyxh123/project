@@ -28,9 +28,6 @@ public class LoginServiceImpl implements LoginService {
         if(StringUtils.isEmpty(account)){
             return new UserDTO();
         }
-        if(userService == null){
-            this.userService = BeanUtils.getApplicationContext().getBean(UserService.class);
-        }
         return userService.queryUserByAccount(account);
     }
 

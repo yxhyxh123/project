@@ -15,7 +15,7 @@ public class UserSqlProvider {
     public static String queryListByUserId(final String id){
         return new SQL(){{
             SELECT("ID,ACCOUNT");
-            FROM("YZH.MEMBER");
+            FROM("SYSTEM.MEMBER");
             WHERE("MEMBER.ID = #{id}");
         }}.toString();
     }
