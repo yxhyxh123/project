@@ -1,0 +1,31 @@
+server:
+  port: 8082
+##动态权限配置文件
+#List<Map<String, String>>
+permission-config:
+  perms:
+    - url: /admin
+      permission: roles[admin]
+    - url: /modify
+      permission: perms[modify]
+    - url: /test
+      permission: perms[test]
+spring:
+  thymeleaf:
+    prefix: classpath:/templates/
+    suffix: .html
+    servlet:
+      content-type: text/html
+    cache: false
+    mode: LEGACYHTML5
+    encoding: UTF-8
+dubbo:
+  application:
+    name: admin
+    registry:
+      address: 127.0.0.1:2181                  # zookeeper注册中心的地址
+      protocol: zookeeper
+    protocol:
+      name: dubbo
+      port: 20880
+    scan: com.demo.parent.admin.service.impl

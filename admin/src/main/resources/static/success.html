@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <meta charset="UTF-8">
+    <title>success</title>
+</head>
+<body>
+<span th:text="'欢迎你,'+${account}"></span>
+<br>
+<!--使用标签前 -->
+<!--<a href="/dog">Dog</a>-->
+<!--<a href="/cat">Cat</a>-->
+<!--<hr>-->
+<!--<a href="/sing">Sing</a>-->
+<!--<a href="/jump">Jump</a>-->
+<!--<a href="/rap">Rap</a>-->
+<!--<a href="/basketball">Basketball</a>-->
+<!--<hr>-->
+
+<!--使用标签后 -->
+<shiro:hasRole name="admin"><a href="/admin">admin</a></shiro:hasRole>
+<hr>
+<shiro:hasPermission name="modify"><a href="/modify">modify</a></shiro:hasPermission>
+<shiro:hasPermission name="test"><a href="/test">test</a></shiro:hasPermission>
+
+</body>
+</html>

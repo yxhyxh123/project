@@ -1,0 +1,9 @@
+Manifest-Version: 1.0
+Created-By: IntelliJ IDEA
+Built-By: yanzhenghui
+Build-Jdk: 1.8.0_181
+Implementation-Title: admin
+Implementation-Version: 1.0.0-SNAPSHOT
+Implementation-Vendor-Id: com.demo.parent
+Main-Class: ${start-class}
+
