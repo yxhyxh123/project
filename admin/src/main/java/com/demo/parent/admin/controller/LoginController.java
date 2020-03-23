@@ -1,5 +1,7 @@
 package com.demo.parent.admin.controller;
 
+import com.demo.parent.admin.bean.Response;
+import com.demo.parent.admin.vo.UserVO;
 import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.IncorrectCredentialsException;
@@ -8,9 +10,11 @@ import org.apache.shiro.authc.UsernamePasswordToken;
 
 import org.apache.shiro.subject.Subject;
 import org.springframework.stereotype.Controller;
-import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import static com.demo.parent.admin.enums.ResponseEnum.*;
 
 
 /**
@@ -29,32 +33,37 @@ public class LoginController {
     }
 
     @PostMapping("/login")
-    public String login(String account, String password, Model model) {
-
+    @ResponseBody
+    public Response<UserVO> login(String account, String password) {
+        Response<UserVO> response = new Response<UserVO>();
         UsernamePasswordToken token = new UsernamePasswordToken(account, password);
         Subject currentUser = SecurityUtils.getSubject();
-
         try {
             //主体提交登录请求到SecurityManager
             currentUser.login(token);
         } catch (IncorrectCredentialsException ice) {
-            model.addAttribute("msg", "密码不正确");
+            response = Response.build(INCORRECT_CREDENTIALS);
         } catch (UnknownAccountException uae) {
-            model.addAttribute("msg", "账号不存在");
+            response = Response.build(UNKNOWN_ACCOUNT);
         } catch (AuthenticationException ae) {
-            model.addAttribute("msg", "状态不正常");
+            response = Response.build(AUTHENTICATION_EXCETION);
         }
         if (currentUser.isAuthenticated()) {
             System.out.println("认证成功");
-            model.addAttribute("account", account);
-            return "success";
+            UserVO user = new UserVO();
+            String userId = (String)currentUser.getPrincipal();
+            user.setUserId(userId);
+            user.setUserAccount(account);
+            return response;
         } else {
             token.clear();
-            return "login";
+            response = Response.build(ERROR);
+            return response;
         }
     }
 
     /*test*/
+    @ResponseBody
     @GetMapping("/admin")
     public String admin() {
         Subject subject = SecurityUtils.getSubject();

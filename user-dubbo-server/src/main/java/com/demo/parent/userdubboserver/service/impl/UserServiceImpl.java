@@ -12,7 +12,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
 
-import java.util.Collections;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,21 +32,20 @@ public class UserServiceImpl implements UserService {
     private PermissionMapper permissionMapper;
 
     @Override
-    public UserDTO queryPermissionsByRole(String role) {
-        UserDTO userDTO = new UserDTO();
+    public List<String> queryPermissionsByRole(String role) {
+        List<String> permissions = new ArrayList<>();
         if(StringUtils.isEmpty(role)){
-            return userDTO;
+            return new ArrayList<>();
         }
         PermissionEntity entity = new PermissionEntity();
         entity.setRole(role);
         List<PermissionEntity> lists = permissionMapper.select(entity);
         if(CollectionUtils.isEmpty(lists)){
-            return userDTO;
+            return permissions;
         }
-        List<String> permissions =  lists.stream().
+         permissions =  lists.stream().
                 map(PermissionEntity::getPermission).collect(Collectors.toList());
-        userDTO.setPermissions(permissions);
-        return userDTO;
+        return permissions;
     }
 
     @Override
@@ -58,7 +57,10 @@ public class UserServiceImpl implements UserService {
         UserEntity user =  new UserEntity();
         user.setUserAccount(account);
         user = userMapper.selectOne(user);
-        BeanUtils.copyProperties(user,userDTO);
+        if(user != null) {
+            BeanUtils.copyProperties(user, userDTO);
+            userDTO.setUserId(user.getId());
+        }
         return userDTO;
     }
 }

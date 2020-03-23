@@ -5,6 +5,7 @@ import lombok.Data;
 
 import javax.persistence.Column;
 import javax.persistence.Id;
+import javax.persistence.Table;
 
 /**
  * projectName demo
@@ -14,6 +15,7 @@ import javax.persistence.Id;
  * @date 2020/3/19 10:05 上午
  */
 @Data
+@Table(name = "SYSTEM.ROLE_PERMISSION")
 public class PermissionEntity {
     @Id
     private String id;

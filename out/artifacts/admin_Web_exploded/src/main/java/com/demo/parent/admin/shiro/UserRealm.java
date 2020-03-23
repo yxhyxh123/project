@@ -3,16 +3,16 @@ package com.demo.parent.admin.shiro;
 import com.demo.parent.admin.service.LoginService;
 import com.demo.parent.admin.util.BeanUtils;
 import com.demo.parent.commondubboservice.dto.UserDTO;
-import org.apache.shiro.authc.AuthenticationException;
-import org.apache.shiro.authc.AuthenticationInfo;
-import org.apache.shiro.authc.AuthenticationToken;
-import org.apache.shiro.authc.SimpleAuthenticationInfo;
+import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
+
+import java.util.Collections;
 
 /**
  * projectName demo
@@ -41,9 +41,8 @@ public class UserRealm extends AuthorizingRealm {
         if(loginService == null){
             this.loginService = BeanUtils.getBean(LoginService.class);
         }
-        UserDTO user1 = loginService.test();
         UserDTO user = loginService.queryUserByAccount(account);
-        if(user == null){
+        if(StringUtils.isEmpty(user.getUserId())){
             return null;
         }
         /*做身份验证*/
@@ -70,7 +69,9 @@ public class UserRealm extends AuthorizingRealm {
         //添加角色
         simpleAuthorizationInfo.addRole(user.getUserRole());
         //添加权限
-        simpleAuthorizationInfo.addStringPermissions(user.getPermissions());
+        if(!CollectionUtils.isEmpty(user.getPermissions())) {
+            simpleAuthorizationInfo.addStringPermissions(user.getPermissions());
+        }
         return simpleAuthorizationInfo;
     }
 }

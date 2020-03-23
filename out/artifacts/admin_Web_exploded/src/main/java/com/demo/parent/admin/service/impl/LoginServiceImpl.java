@@ -8,6 +8,8 @@ import com.demo.parent.userdubboserver.service.UserService;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
 
+import java.util.List;
+
 /**
  * projectName demo
  * className LoginServiceImpl
@@ -28,7 +30,10 @@ public class LoginServiceImpl implements LoginService {
         if(StringUtils.isEmpty(account)){
             return new UserDTO();
         }
-        return userService.queryUserByAccount(account);
+        UserDTO userDTO = userService.queryUserByAccount(account);
+        List<String> permissions = userService.queryPermissionsByRole(userDTO.getUserRole());
+        userDTO.setPermissions(permissions);
+        return userDTO;
     }
 
     @Override

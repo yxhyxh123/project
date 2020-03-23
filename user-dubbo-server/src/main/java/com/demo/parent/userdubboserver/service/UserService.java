@@ -2,6 +2,8 @@ package com.demo.parent.userdubboserver.service;
 
 import com.demo.parent.commondubboservice.dto.UserDTO;
 
+import java.util.List;
+
 /**
  * projectName demo
  * interfaceName UserService
@@ -24,9 +26,9 @@ public interface UserService {
     /**
      * 根据角色查询权限信息
      * @param  role 角色名
-     * @return  dto
+     * @return  List<String></>
      * @author  yzh
      * @date    2020/3/19
      */
-    UserDTO queryPermissionsByRole(String role);
+    List<String> queryPermissionsByRole(String role);
 }

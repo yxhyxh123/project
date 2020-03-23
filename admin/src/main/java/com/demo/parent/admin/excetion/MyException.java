@@ -1,6 +1,6 @@
 package com.demo.parent.admin.excetion;
 
-import com.demo.parent.admin.enums.ExceptionEnum;
+import com.demo.parent.admin.enums.ResponseEnum;
 
 /**
  * projectName demo
@@ -15,7 +15,7 @@ public class MyException extends RuntimeException{
     private int code;
     private String msg;
 
-    public MyException(ExceptionEnum exceptionEnum){
+    public MyException(ResponseEnum exceptionEnum){
         super(exceptionEnum.toString());
         this.code = exceptionEnum.getCode();
         this.msg  = exceptionEnum.getMsg();
