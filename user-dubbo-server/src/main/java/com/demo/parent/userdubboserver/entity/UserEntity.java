@@ -20,7 +20,7 @@ public class UserEntity implements Serializable {
     private static final long serialVersionUID = 7170901961429821794L;
 
     @Id
-    private String id;
+    private Integer id;
     @Column(name = "ACCOUNT")
     private String userAccount;
     @Column(name = "USERNAME")
@@ -28,7 +28,11 @@ public class UserEntity implements Serializable {
     @Column(name = "PASSWORD")
     private String password;
     @Column(name = "ROLE")
-    private String userRole;
+    private Integer userRole;
     @Column(name = "STATUS")
-    private String userStatus;
+    private Integer userStatus;
+    @Column(name = "CREATETIME")
+    private Long createTime;
+    @Column(name = "MODIFYTIME")
+    private Long modifyTime;
 }

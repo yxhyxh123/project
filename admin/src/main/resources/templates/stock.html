@@ -1,0 +1,66 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>药品库存信息柱状图</title>
+</head>
+<body>
+<!-- 为ECharts准备一个具备大小（宽高）的Dom -->
+<div id="main" style="width: 1000px;height:600px;"></div>
+<script type="text/javascript" src="../js/jquery-1.11.1.min.js"></script>
+<script type="text/javascript" src="../js/echarts.min.js"></script>
+<script type="text/javascript">
+
+    // 基于准备好的dom，初始化echartjquery-2.1.1.min.jss实例
+    var myChart=echarts.init(document.getElementById("main"));
+
+    // 指定图表的配置项和数据
+
+    myChart.setOption({
+        title:{
+            text:'药品库存信息柱状图'
+        },
+        tooltip:{
+
+        },
+        legend:{
+            data:['库存']
+        },
+        xAxis:{
+            data:[]
+        },
+        yAxis:{
+            name:'库存数量（件）'
+        },
+        series:[
+            {
+                name:'库存',
+                type:'bar',
+                data:[]
+            },
+        ]
+    });
+
+
+    $.ajax({
+        type : 'get',
+        url :'/queryBarGraphList',
+        async: false,
+        success : function(response){
+            myChart.setOption({
+                xAxis:{
+                    data:response.data.name,
+                    name:"药品通用名"
+                },
+                series:[
+                    {
+                        name:'库存',
+                        data:response.data.counts
+                    },
+                ]
+            });
+        }
+    });
+</script>
+</body>
+</html>

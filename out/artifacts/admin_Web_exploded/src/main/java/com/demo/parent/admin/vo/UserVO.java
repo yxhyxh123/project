@@ -15,13 +15,13 @@ import java.io.Serializable;
 public class UserVO implements Serializable {
 
     private static final long serialVersionUID = 4035058570737491846L;
-
-    private String userId;
-    private String userAccount;
+    private Integer userId;
+    private String account;
     private String userName;
     private String password;
-    private String userRole;
-    private String userStatus;
+    private Integer userRole;
+    private Integer userStatus;
+    private Boolean rememberMe;
 
 
 }

@@ -1,8 +1,10 @@
 package com.demo.parent.admin.shiro;
 
-import com.demo.parent.admin.service.LoginService;
+import com.demo.parent.admin.service.UserService;
 import com.demo.parent.admin.util.BeanUtils;
 import com.demo.parent.commondubboservice.dto.UserDTO;
+import com.demo.parent.commondubboservice.enums.RoleEnum;
+import com.demo.parent.commondubboservice.util.MD5Util;
 import org.apache.shiro.authc.*;
 import org.apache.shiro.authz.AuthorizationInfo;
 import org.apache.shiro.authz.SimpleAuthorizationInfo;
@@ -11,8 +13,6 @@ import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.util.CollectionUtils;
 import org.springframework.util.StringUtils;
-
-import java.util.Collections;
 
 /**
  * projectName demo
@@ -27,7 +27,7 @@ public class UserRealm extends AuthorizingRealm {
 
 
     @Autowired
-    private LoginService loginService;
+    private UserService loginService;
 
     /**
      * 认证
@@ -39,16 +39,16 @@ public class UserRealm extends AuthorizingRealm {
         //1.获取用户输入的账号
         String account = (String)token.getPrincipal();
         if(loginService == null){
-            this.loginService = BeanUtils.getBean(LoginService.class);
-        }
+            this.loginService = BeanUtils.getBean(UserService.class);
+    }
         UserDTO user = loginService.queryUserByAccount(account);
-        if(StringUtils.isEmpty(user.getUserId())){
+        if(StringUtils.isEmpty(user.getId())){
             return null;
         }
         /*做身份验证*/
         SimpleAuthenticationInfo simpleAuthenticationInfo =
                 new SimpleAuthenticationInfo(user,user.getPassword(),getName());
-        if(StringUtils.isEmpty(user.getUserStatus())){
+        if(user.getUserStatus() == 0){
             throw new AuthenticationException(ACCOUNT_IS_FORBIDDEN);
         }
         return simpleAuthenticationInfo;
@@ -67,7 +67,8 @@ public class UserRealm extends AuthorizingRealm {
         //通过SimpleAuthenticationInfo做授权
         SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
         //添加角色
-        simpleAuthorizationInfo.addRole(user.getUserRole());
+        Integer role = user.getUserRole();
+        simpleAuthorizationInfo.addRole(RoleEnum.getName(role));
         //添加权限
         if(!CollectionUtils.isEmpty(user.getPermissions())) {
             simpleAuthorizationInfo.addStringPermissions(user.getPermissions());

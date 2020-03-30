@@ -32,4 +32,7 @@ public interface UserMapper extends Mapper<UserEntity> {
             @Result(column = "ACCOUNT",property = "userAccount")
     })
     List<UserEntity>  queryListByUserId(@Param("id")String userId);
+
+    @SelectProvider(type = UserSqlProvider.class,method = "queryAllCount")
+    int queryAllCount();
 }

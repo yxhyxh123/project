@@ -17,6 +17,7 @@
         <module>admin</module>
         <module>common-dubbo-service</module>
         <module>user-dubbo-server</module>
+        <module>drug-dubbo-server</module>
     </modules>
     <name>yzh</name>
     <description>Demo project for Spring Boot</description>
@@ -35,6 +36,9 @@
         <lombok.version>1.16.10</lombok.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
         <thymeleaf.extras.shiro.version>2.0.0</thymeleaf.extras.shiro.version>
+        <junit.version>4.12</junit.version>
+        <shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
+        <jedis.version>2.9.0</jedis.version>
     </properties>
 
     <dependencyManagement>
@@ -59,12 +63,12 @@
             <version>${mapper.starter.version}</version>
         </dependency>
 
-       <!--  分页助手启动器
+       <!--  分页助手启动器-->
         <dependency>
             <groupId>com.github.pagehelper</groupId>
             <artifactId>pagehelper-spring-boot-starter</artifactId>
             <version>${pageHelper.starter.version}</version>
-        </dependency>-->
+        </dependency>
 
         <!-- oracle -->
         <dependency>
@@ -117,6 +121,25 @@
         <groupId>com.alibaba.boot</groupId>
         <artifactId>dubbo-spring-boot-starter</artifactId>
         <version>${dubbo.boot.version}</version>
+        </dependency>
+
+        <dependency>
+            <groupId>org.crazycake</groupId>
+            <artifactId>shiro-redis</artifactId>
+            <version>${shiro.redis.version}</version>
+        </dependency>
+        <!--单元测试-->
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>${junit.version}</version>
+        </dependency>
+
+        <!--jedis-->
+        <dependency>
+            <groupId>redis.clients</groupId>
+            <artifactId>jedis</artifactId>
+            <version>${jedis.version}</version>
         </dependency>
 
 

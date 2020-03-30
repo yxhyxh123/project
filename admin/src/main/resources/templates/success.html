@@ -5,7 +5,6 @@
     <title>success</title>
 </head>
 <body>
-<span th:text="'欢迎你,'+${account}"></span>
 <br>
 <!--使用标签前 -->
 <!--<a href="/dog">Dog</a>-->
@@ -18,7 +17,11 @@
 <!--<hr>-->
 
 <!--使用标签后 -->
-<shiro:hasRole name="admin"><a href="/admin">admin</a></shiro:hasRole>
+<shiro:hasRole name="admin">
+    <a href="/admin">用户管理</a>
+    <a href="/drug">药库管理</a>
+</shiro:hasRole>
+
 <hr>
 <shiro:hasPermission name="modify"><a href="/modify">modify</a></shiro:hasPermission>
 <shiro:hasPermission name="test"><a href="/test">test</a></shiro:hasPermission>

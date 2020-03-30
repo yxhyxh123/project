@@ -41,6 +41,11 @@ public class Response<T> {
         this.data = data;
     }
 
+    private Response(Integer code,String msg) {
+        this.code = code;
+        this.msg = msg;
+    }
+
     public static Response success() {
         return new Response(ResponseEnum.SUCCESS);
     }
@@ -58,6 +63,9 @@ public class Response<T> {
     }
     public static<T> Response<T> build(ResponseEnum responseCode,String msg,T data) {
         return new Response(responseCode,msg,data);
+    }
+    public static<T> Response<T> build(Integer code,String msg) {
+        return new Response(code,msg);
     }
 
     public int getCode() {

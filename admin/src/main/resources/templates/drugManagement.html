@@ -1,0 +1,544 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml" xmlns:shiro="http://www.pollix.at/thymeleaf/shiro">
+<head>
+    <title>药库管理</title>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8" />
+    <link href="../demo/demo.css" rel="stylesheet" type="text/css" />
+
+
+    <script src="../scripts/boot.js" type="text/javascript"></script>
+
+    <style type="text/css">
+        .New_Button, .Edit_Button, .Delete_Button, .Update_Button, .Cancel_Button,.Add_Stock_Button,.Reduce_Stock_Button
+        {
+            font-size:11px;color:#1B3F91;font-family:Verdana;
+            margin-right:5px;
+        }
+
+
+
+    </style>
+</head>
+<body>
+<h1 align="center" style="font-size: 30px;text-decoration: underline;color: #4bcdee ">药库管理</h1>
+
+<div id="datagrid1" class="mini-datagrid" style="width:1400px;height:500px;" allowResize="true"
+     url="/queryDrugInfoByPage" idField="id" >
+    <div property="columns">
+      <shiro:hasRole name="admin"><div name="action" width="120" headerAlign="center" align="center" renderer="onAdminActionRenderer" cellStyle="padding:0;">#</div></shiro:hasRole>
+       <shiro:hasRole name="user"><div name="action" width="120" headerAlign="center" align="center" renderer="onUserActionRenderer" cellStyle="padding:0;">#</div></shiro:hasRole>
+        <div field="drugCode" width="120" headerAlign="center" allowSort="true" align="center">药品编码</div>
+        <div field="drugName" width="100" allowSort="true" align="center" headerAlign="center">药品名称</div>
+        <div field="genericName" width="100" allowSort="true" align="center" headerAlign="center">药品通用名</div>
+        <div field="drugType" width="100" allowSort="true" renderer="onTypeRenderer" align="center" headerAlign="center">药品分类</div>
+        <div field="spec" width="100" allowSort="true" align="center" headerAlign="center">药品规格</div>
+        <div field="area" width="100" allowSort="true" align="center" headerAlign="center">产地</div>
+        <div field="stock" width="100" allowSort="true" align="center" headerAlign="center">库存</div>
+        <div field="status" width="100" allowSort="true" renderer="onStatusRenderer" align="center" headerAlign="center">状态</div>
+        <div field="createDate" width="120" headerAlign="center" dateFormat="yyyy-MM-dd HH:mm:ss" allowSort="true">创建日期</div>
+        <div field="modifyDate" width="120" headerAlign="center" dateFormat="yyyy-MM-dd HH:mm:ss" allowSort="true">修改日期</div>
+
+    </div>
+</div>
+
+
+<div id="editForm1" style="display:none;padding:5px;position:relative;">
+    <input class="mini-hidden" name="id"/>
+    <table style="width:100%;">
+        <tr>
+            <td style="width:80px;">药品编码：</td>
+            <td style="width:150px;"><input  name="drugCode" class="mini-textbox"  required="required" readonly="readonly"/>
+            </td>
+            <td style="width:80px;">药品名称：</td>
+            <td style="width:150px;"><input  name="drugName" class="mini-textbox"  required="required" readonly="readonly"/>
+            </td>
+            <td style="width:80px;">药品通用名：</td>
+            <td style="width:150px;"><input name="genericName" class="mini-textbox" required="required" requiredErrorText="药品通用名不能为空"  onvalidation="onGenericValidation"/>
+                <div id="genericName_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">药品分类：</td>
+            <td style="width:150px;"><input name="drugType" class="mini-combobox" data="Type" render="onTypeRender"/></td>
+        </tr>
+        <tr>
+            <td style="width:30px;">药品规格：</td>
+            <td style="width:150px;"><input name="spec"  errorMode="none" class="mini-textbox" required="required"  requiredErrorText="药品规格不能为空"  onvalidation="onSpecValidation"/>
+                <div id="spec_error" class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:30px;">产地：</td>
+            <td style="width:150px;"><input name="area"  errorMode="none" class="mini-textbox" required="required"  requiredErrorText="用户名不能为空"  onvalidation="onAreaValidation"/>
+                <div id="area_error" class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">状态：</td>
+            <td style="width:150px;"><input name="status" class="mini-combobox" data="Status" required="required" render="onStatusRenderer"/>
+            </td>
+            <td style="width:80px;">库存：</td>
+            <td style="width: 150px;"><input name="stock" class="mini-spinner" errorMode="none" minValue="0" maxValue="1000000" value="1000"  /></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;padding-top:5px;padding-right:20px;" colspan="6">
+                <a class="Update_Button" href="javascript:updateRow();">保存</a>
+                <a class="Cancel_Button" href="javascript:cancelRow();">取消</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+<div id="reduceStockForm" style="display:none;padding:5px;position:relative;">
+    <input class="mini-hidden" name="id"/>
+    <table style="width:100%;">
+        <tr>
+            <td style="width:100px;">出库药品编码：</td>
+            <td style="width:150px;"><input  name="drugCode" class="mini-textbox"  required="required" readonly="readonly"/>
+            </td>
+            <td style="width:100px;">出库药品名称：</td>
+            <td style="width:150px;"><input  name="drugName" class="mini-textbox"  required="required" readonly="readonly"/>
+            </td>
+            </td>
+            <td style="width:100px;">出库药品数量：</td>
+            <td><input name="stock" class="mini-spinner" minValue="0" maxValue="1000000" value="1000"  /></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;padding-top:5px;padding-right:20px;" colspan="6">
+                <a class="Add_Stock_Button" href="javascript:reduceStock();">确定</a>
+                <a class="Cancel_Button" href="javascript:cancelRow();">取消</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<div id="addStockForm" style="display:none;padding:5px;position:relative;">
+    <input class="mini-hidden" name="id"/>
+    <table style="width:100%;">
+        <tr>
+            <td style="width:100px;">入库药品编码：</td>
+            <td style="width:150px;"><input  name="drugCode" class="mini-textbox"  required="required" readonly="readonly"/>
+            </td>
+            <td style="width:100px;">入库药品名称：</td>
+            <td style="width:150px;"><input  name="drugName" class="mini-textbox"  required="required" readonly="readonly"/>
+            </td>
+            </td>
+            <td style="width:100px;">入库药品数量：</td>
+            <td><input name="stock" class="mini-spinner" minValue="0" maxValue="1000000" value="1000"  /></td>
+        </tr>
+        <tr>
+            <td style="text-align:right;padding-top:5px;padding-right:20px;" colspan="6">
+                <a class="Add_Stock_Button" href="javascript:addStock();">确定</a>
+                <a class="Cancel_Button" href="javascript:cancelRow();">取消</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+<div id="addForm1" style="display:none;padding:5px;position:relative;">
+    <input class="mini-hidden" name="id"/>
+    <table style="width:100%;">
+        <tr>
+            <td style="width:80px;">药品编号：</td>
+            <td style="width:150px;"><input  name="drugCode" errorMode="none" class="mini-textbox" required="required" requiredErrorText="药品编号不能为空"  onvalidation="onDrugCodeValidation"/>
+                <div id="drugCode_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">药品名称：</td>
+            <td style="width:150px;"><input  name="drugName" errorMode="none" class="mini-textbox" required="required" requiredErrorText="药品名称不能为空"  onvalidation="onDrugNameValidation"/>
+                <div id="drugName_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">药品通用名：</td>
+            <td style="width:150px;"><input name="genericNameAdd" class="mini-textbox" required="required" requiredErrorText="药品通用名不能为空"  onvalidation="onGenericValidation"/>
+                <div id="genericNameAdd_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">药品分类：</td>
+            <td style="width:150px;"><input name="drugType" class="mini-combobox" data="Type" required="required" requiredErrorText="药品分类不能为空" onvalidation="onDrugTypeValidation"/>
+                <div id="drugType_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+
+        </tr>
+        <tr>
+            <td style="width:80px;">药品规格：</td>
+            <td style="width:150px;"><input name="specAdd" class="mini-textbox" required="required" requiredErrorText="药品规格不能为空"  onvalidation="onSpecValidation"/>
+                <div id="specAdd_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">产地：</td>
+            <td style="width:150px;"><input name="areaAdd" class="mini-textbox" required="required" requiredErrorText="药品产地不能为空"  onvalidation="onAreaValidation"/>
+                <div id="areaAdd_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">状态：</td>
+            <td style="width:150px;"><input name="status" class="mini-combobox" data="Status" required="required" requiredErrorText="状态信息不能为空" onvalidation="onStatusValidation"/>
+                <div id="status_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>
+            <td style="width:80px;">库存：</td>
+            <td><input name="stock" class="mini-spinner" minValue="0" maxValue="1000000" value="1000"  /></td>
+            <!--<td style="width:80px;">库存：</td>
+            <td style="width:150px;"><input name="stock" class="mini-textbox" required="required" requiredErrorText="库存信息不能为空"  onvalidation="onStockValidation"/>
+                <div id="stock_error"  class="errorText" style="color: #880000;font-size: 15px" ></div>
+            </td>-->
+        </tr>
+        <tr>
+            <td style="text-align:right;padding-top:5px;padding-right:20px;" colspan="6">
+                <a class="Update_Button" href="javascript:addRow();">保存</a>
+                <a class="Cancel_Button" href="javascript:cancelRow();">取消</a>
+            </td>
+        </tr>
+    </table>
+</div>
+
+
+
+<script type="text/javascript">
+    var Type = [{ id: 1, text: '西药' }, { id: 2, text: '草药'},{id:3,text: '中成药'}];
+    var Status = [{ id: 0, text: '停用' }, { id: 1, text: '启用'}];
+    mini.parse();
+
+    var editForm = document.getElementById("editForm1");
+    var addForm = document.getElementById("addForm1");
+    var addStockForm = document.getElementById("addStockForm");
+    var reduceStockForm = document.getElementById("reduceStockForm");
+    var grid = mini.get("datagrid1");
+    grid.load();
+    grid.sortBy("createTime", "desc");
+
+    ///////////////////////////////////////////////////////
+
+    function onTypeRenderer(e) {
+        for (var i = 0, l = Type.length; i < l; i++) {
+            var g = Type[i];
+            if (g.id == e.value) return g.text;
+        }
+        return "";
+    }
+
+
+    function onStatusRenderer(e) {
+        for (var i = 0, l = Status.length; i < l; i++) {
+            var g = Status[i];
+            if (g.id == e.value) return g.text;
+        }
+        return "";
+    }
+
+    function onAdminActionRenderer(e) {
+        var grid = e.sender;
+        var record = e.record;
+        var uid = record._uid;
+        var rowIndex = e.rowIndex;
+
+        var s = '<a class="Add_Stock_Button" href="javascript:editStock(\'' + uid + '\')">入库</a>'
+            + '<a class="Reduce_Stock_Button" href="javascript:lessStock(\'' + uid + '\')">出库</a>'
+                 +'<a class="New_Button" href="javascript:newRow()">新增</a> '
+                        + '<a class="Edit_Button" href="javascript:editRow(\'' + uid + '\')">编辑</a> '
+        return s;
+    }
+
+    function onUserActionRenderer(e) {
+        var grid = e.sender;
+        var record = e.record;
+        var uid = record._uid;
+        var rowIndex = e.rowIndex;
+
+        var s = '<a class="Add_Stock_Button" href="javascript:editStock(\'' + uid + '\')">入库</a>'
+            + '<a class="Reduce_Stock_Button" href="javascript:lessStock(\'' + uid + '\')">出库</a>'
+        return s;
+    }
+
+    function updateError(e) {
+        var id = e.sender.name + "_error";
+        var el = document.getElementById(id);
+        if (el) {
+            el.innerHTML = e.errorText;
+        }
+    }
+
+    function onStockValidation(e) {
+        updateError(e);
+    }
+
+    function onAreaValidation(e) {
+        updateError(e);
+    }
+
+    function onDrugCodeValidation(e) {
+        updateError(e);
+    }
+
+    function onSpecValidation(e) {
+        updateError(e);
+    }
+
+    function onGenericValidation(e) {
+        updateError(e);
+    }
+
+    function onStatusValidation(e) {
+        updateError(e);
+    }
+
+    function onDrugTypeValidation(e) {
+        updateError(e);
+    }
+
+    function onDrugNameValidation(e) {
+        updateError(e);
+    }
+
+    function newRow() {
+        var row = {};
+        grid.addRow(row, 0);
+        // editRow(row._uid);
+        var row1 = grid.getRowByUID(row._uid);
+        if (row1) {
+            //显示行详细
+            grid.hideAllRowDetail();
+            grid.showRowDetail(row1);
+            //将addForm元素，加入行详细单元格内
+            var td = grid.getRowDetailCellEl(row1);
+            td.appendChild(addForm);
+            addForm.style.display = "";
+            //表单加载员工信息
+            var form = new mini.Form("addForm1");
+            form.reset();
+            grid.doLayout();
+        }
+    }
+
+    function editRow(row_uid) {
+        var row = grid.getRowByUID(row_uid);
+        if (row) {
+            //显示行详细
+            grid.hideAllRowDetail();
+            grid.showRowDetail(row);
+            //将editForm元素，加入行详细单元格内
+            var td = grid.getRowDetailCellEl(row);
+            td.appendChild(editForm);
+            editForm.style.display = "";
+
+            //表单加载员工信息
+            var form = new mini.Form("editForm1");
+            form.loading();
+            $.ajax({
+                url: "/queryDrugInfoById?id=" + row.id,
+                success: function (response) {
+                    if (response.code == 200) {
+                        var o = mini.decode(response.data);
+                        form.setData(o);
+                        form.unmask();
+                    } else {
+                        mini.alert(response.msg);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mini.alert(jqXHR.responseText);
+                    CloseWindow();
+                }
+            });
+            grid.doLayout();
+        }
+    }
+
+    function lessStock(row_uid) {
+        var row = grid.getRowByUID(row_uid);
+        if (row) {
+            //显示行详细
+            grid.hideAllRowDetail();
+            grid.showRowDetail(row);
+            //将editForm元素，加入行详细单元格内
+            var td = grid.getRowDetailCellEl(row);
+            td.appendChild(reduceStockForm);
+            reduceStockForm.style.display = "";
+
+            //表单加载员工信息
+            var form = new mini.Form("reduceStockForm");
+            form.loading();
+            $.ajax({
+                url: "/queryDrugInfoById?id=" + row.id,
+                success: function (response) {
+                    if (response.code == 200) {
+                        var o = mini.decode(response.data);
+                        form.setData(o);
+                        form.unmask();
+                    } else {
+                        mini.alert(response.msg);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mini.alert(jqXHR.responseText);
+                    CloseWindow();
+                }
+            });
+            grid.doLayout();
+        }
+    }
+
+    function editStock(row_uid) {
+        var row = grid.getRowByUID(row_uid);
+        if (row) {
+            //显示行详细
+            grid.hideAllRowDetail();
+            grid.showRowDetail(row);
+            //将editForm元素，加入行详细单元格内
+            var td = grid.getRowDetailCellEl(row);
+            td.appendChild(addStockForm);
+            addStockForm.style.display = "";
+
+            //表单加载员工信息
+            var form = new mini.Form("addStockForm");
+            form.loading();
+            $.ajax({
+                url: "/queryDrugInfoById?id=" + row.id,
+                success: function (response) {
+                    if (response.code == 200) {
+                        var o = mini.decode(response.data);
+                        form.setData(o);
+                        form.unmask();
+                    } else {
+                        mini.alert(response.msg);
+                    }
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    mini.alert(jqXHR.responseText);
+                    CloseWindow();
+                }
+            });
+            grid.doLayout();
+        }
+    }
+
+    function cancelRow() {
+        grid.reload();
+    }
+    function delRow(row_uid) {
+        var row = grid.getRowByUID(row_uid);
+        if (row) {
+            if (confirm("确定删除此记录？")) {
+                grid.loading("删除中，请稍后......");
+                $.ajax({
+                    url: "../data/userService.aspx?method=RemoveEmployees&id=" + row.id,
+                    success: function (text) {
+                        grid.reload();
+                    },
+                    error: function () {
+                    }
+                });
+            }
+        }
+    }
+
+        function reduceStock() {
+            var form = new mini.Form("reduceStockForm");
+            form.validate();
+            var o = form.getData();
+            var json = mini.encode(o);
+            grid.loading("保存中，请稍后......");
+            $.ajax({
+                url: "/reduce",
+                type: 'post',
+                data: json,
+                dataType : "json",
+                contentType : "application/json",
+                ajaxDataType: "json",
+                ajaxContentType: "application/json",
+                success: function (response) {
+                    if(response.code != 200){
+                        mini.alert(response.msg);
+                    }
+                    grid.reload();
+                },
+                error: function (jqXHR, textStatus, errorThrown) {
+                    alert(jqXHR.responseText);
+                }
+            });
+
+        }
+
+    function addStock() {
+        var form = new mini.Form("addStockForm");
+        form.validate();
+        var o = form.getData();
+        var json = mini.encode(o);
+        grid.loading("保存中，请稍后......");
+        $.ajax({
+            url: "/increase",
+            type: 'post',
+            data: json,
+            dataType : "json",
+            contentType : "application/json",
+            ajaxDataType: "json",
+            ajaxContentType: "application/json",
+            success: function (response) {
+                if(response.code != 200){
+                    mini.alert(response.msg);
+                }
+                grid.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            }
+        });
+
+    }
+
+
+    function updateRow() {
+        var form = new mini.Form("editForm1");
+        form.validate();
+        var o = form.getData();
+        var json = mini.encode(o);
+        if(o.genericName == ""||o.spec == ""||o.area==""){
+            return;
+        }
+        grid.loading("保存中，请稍后......");
+        $.ajax({
+            url: "/updateDrug",
+            type: 'post',
+            data: json,
+            dataType : "json",
+            contentType : "application/json",
+            ajaxDataType: "json",
+            ajaxContentType: "application/json",
+            success: function (text) {
+                grid.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            }
+        });
+
+    }
+
+    function addRow() {
+        var form = new mini.Form("addForm1");
+        form.validate();
+        var o = form.getData();
+        var json = mini.encode(o);
+        if(o.drugCode == ""||o.drugName==""||o.drugType==""||o.genericNameAdd==""||o.specAdd==""||o.areaAdd== ""||o.status == ""){
+            return;
+        }
+        grid.loading("保存中，请稍后......");
+        $.ajax({
+            url: "/addDrug",
+            type: 'post',
+            data: json,
+            dataType: "json",
+            contentType: "application/json",
+            ajaxDataType: "json",
+            ajaxContentType: "application/json",
+            success: function (response) {
+                if(response.code  != 200){
+                    mini.alert(response.msg);
+                }
+                grid.reload();
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                alert(jqXHR.responseText);
+            }
+        });
+    }
+
+</script>
+
+<div class="description">
+    <h3>药品信息管理，出/入库操作</h3>
+
+</div>
+</body>
+</html>

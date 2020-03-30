@@ -1,6 +1,7 @@
 package com.demo.parent.admin.excetion;
 
 import com.demo.parent.admin.enums.ResponseEnum;
+import lombok.Data;
 
 /**
  * projectName demo
@@ -10,10 +11,15 @@ import com.demo.parent.admin.enums.ResponseEnum;
  * @author yzh
  * @date 2020/3/19 8:27 上午
  */
+@Data
 public class MyException extends RuntimeException{
 
     private int code;
     private String msg;
+
+    public MyException(){
+        super();
+    }
 
     public MyException(ResponseEnum exceptionEnum){
         super(exceptionEnum.toString());

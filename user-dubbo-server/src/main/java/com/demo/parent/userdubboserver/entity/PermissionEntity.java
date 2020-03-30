@@ -18,7 +18,7 @@ import javax.persistence.Table;
 @Table(name = "SYSTEM.ROLE_PERMISSION")
 public class PermissionEntity {
     @Id
-    private String id;
+    private Integer id;
     @Column(name = "ROLENAME")
     private String role;
     @Column(name = "PERMISSION")

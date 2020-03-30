@@ -19,4 +19,11 @@ public class UserSqlProvider {
             WHERE("MEMBER.ID = #{id}");
         }}.toString();
     }
+
+    public static String queryAllCount(){
+        return new SQL(){{
+            SELECT("COUNT(ID)");
+            FROM("SYSTEM.MEMBER");
+        }}.toString();
+    }
 }

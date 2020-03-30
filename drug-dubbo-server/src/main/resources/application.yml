@@ -1,0 +1,39 @@
+spring:
+  datasource:
+    driverClassName: oracle.jdbc.driver.OracleDriver
+    url: jdbc:oracle:thin:@39.105.102.33:1521:helowin
+    username: system
+    password: qwe123
+  thymeleaf:
+    encoding:
+mybatis:
+  mapper-locations: classpath:mapper/*.xml
+  configuration:
+    call-setters-on-nulls: true
+    map-underscore-to-camel-case: true
+  type-aliases-package: com.demo.parent.drugdubboserver
+server:
+  port: 8083
+mapper:
+  identity: ORACLE
+  mappers: tk.mybatis.mapper.common.Mapper
+dubbo:
+  application:
+    name: drug-dubbo-server
+  registry:
+    address: 39.105.102.33:2181
+    protocol: zookeeper
+  protocol:
+    port: 20886
+    name: dubbo
+  scan:
+    base-packages:  com.demo.parent.drugdubboserver
+logging:
+  config: classpath:logback-spring.xml
+  file:
+    path: /Users/yanzhenghui/Documents/project/logger/drug_dubbo_server
+pagehelper:
+  helper-dialect: oracle
+  reasonable: true
+  support-methods-arguments: true
+  params: count=countSql
