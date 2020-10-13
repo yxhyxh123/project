@@ -36,7 +36,7 @@
         <lombok.version>1.16.10</lombok.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
         <thymeleaf.extras.shiro.version>2.0.0</thymeleaf.extras.shiro.version>
-        <junit.version>4.12</junit.version>
+        <junit.version>4.13.1</junit.version>
         <shiro.redis.version>2.4.2.1-RELEASE</shiro.redis.version>
         <jedis.version>2.9.0</jedis.version>
     </properties>
