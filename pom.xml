@@ -31,7 +31,7 @@
         <mapper.starter.version>2.0.3</mapper.starter.version>
         <pageHelper.starter.version>1.2.5</pageHelper.starter.version>
         <oracle.version>11.2.0.3</oracle.version>
-        <shiro.version>1.4.0</shiro.version>
+        <shiro.version>1.7.0</shiro.version>
         <spring.starter.version>2.2.5.RELEASE</spring.starter.version>
         <lombok.version>1.16.10</lombok.version>
         <thymeleaf.version>3.0.11.RELEASE</thymeleaf.version>
